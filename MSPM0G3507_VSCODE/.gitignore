@@ -1,0 +1,26 @@
+# CMake build outputs
+build/
+build-release/
+cmake-build-*/
+CMakeUserPresets.json
+
+# JetBrains IDE files
+.idea/
+*.iml
+
+# VS Code transient files
+.vscode/ipch/
+.vscode/*.log
+
+# Generated firmware artifacts
+*.elf
+*.hex
+*.bin
+*.map
+
+# Installer package staging and large archive
+installer/DevEnv/
+installer/DevEnv.zip
+installer/installer.zip
+installer/DevEnv_*.zip
+installer/Install-MSPM0G3507-Env_*.exe

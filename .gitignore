@@ -1,0 +1,33 @@
+# Claude AI assistant settings
+.claude/
+
+# Build outputs
+build/
+build-release/
+cmake-build-*/
+CMakeUserPresets.json
+
+# Temp helper scripts
+*.ps1
+
+# IDE files
+.idea/
+*.iml
+
+# VS Code transient files
+.vscode/ipch/
+.vscode/*.log
+
+# Generated firmware artifacts
+*.elf
+*.hex
+*.bin
+*.map
+
+# Reference projects (not part of the main project)
+imu601_ref/
+
+# Installer
+installer/DevEnv/
+installer/DevEnv.zip
+installer/installer.zip

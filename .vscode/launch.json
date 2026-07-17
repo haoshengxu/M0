@@ -1,0 +1,52 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug (Cortex-Debug OpenOCD)",
+      "type": "cortex-debug",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/MSPM0G3507_VSCODE",
+      "executable": "D:/Project/MSPM0G3507_VSCODE/build/MSPM0.elf",
+      "servertype": "openocd",
+      "serverpath": "D:\\DevEnv\\OpenOCD-20260121-0.12.0\\bin\\openocd.exe",
+      "armToolchainPath": "D:\\DevEnv\\10 2021.10\\bin",
+      "gdbPath": "D:\\DevEnv\\10 2021.10\\bin\\arm-none-eabi-gdb.exe",
+      "debuggerArgs": ["-iex", "set remote noack-packet off"],
+      "objdumpPath": "D:\\DevEnv\\10 2021.10\\bin\\arm-none-eabi-objdump.exe",
+      "configFiles": ["${workspaceFolder}/MSPM0G3507_VSCODE/linker/CFG.cfg"],
+      "searchDir": ["D:\\DevEnv\\OpenOCD-20260121-0.12.0\\share\\openocd\\scripts"],
+      "device": "MSPM0G3507",
+      "svdFile": "${workspaceFolder}/MSPM0G3507_VSCODE/linker/MSPM0G350X.svd",
+      "numberOfProcessors": 1,
+      "targetProcessor": 0,
+      "runToEntryPoint": "main",
+      "preLaunchTask": "Build",
+      "showDevDebugOutput": "none",
+      "liveWatch": {
+        "enabled": true,
+        "samplesPerSecond": 10
+      }
+    },
+    {
+      "name": "Attach (Cortex-Debug OpenOCD)",
+      "type": "cortex-debug",
+      "request": "attach",
+      "cwd": "${workspaceFolder}/MSPM0G3507_VSCODE",
+      "executable": "D:/Project/MSPM0G3507_VSCODE/build/MSPM0.elf",
+      "servertype": "openocd",
+      "serverpath": "D:\\DevEnv\\OpenOCD-20260121-0.12.0\\bin\\openocd.exe",
+      "armToolchainPath": "D:\\DevEnv\\10 2021.10\\bin",
+      "gdbPath": "D:\\DevEnv\\10 2021.10\\bin\\arm-none-eabi-gdb.exe",
+      "debuggerArgs": ["-iex", "set remote noack-packet off"],
+      "objdumpPath": "D:\\DevEnv\\10 2021.10\\bin\\arm-none-eabi-objdump.exe",
+      "configFiles": ["${workspaceFolder}/MSPM0G3507_VSCODE/linker/CFG.cfg"],
+      "searchDir": ["D:\\DevEnv\\OpenOCD-20260121-0.12.0\\share\\openocd\\scripts"],
+      "device": "MSPM0G3507",
+      "svdFile": "${workspaceFolder}/MSPM0G3507_VSCODE/linker/MSPM0G350X.svd",
+      "numberOfProcessors": 1,
+      "targetProcessor": 0,
+      "showDevDebugOutput": "none",
+      "postAttachCommands": ["monitor halt"]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build",
+      "type": "process",
+      "command": "D:\\DevEnv\\cmake-4.2.3-windows-x86_64\\bin\\cmake.exe",
+      "args": [
+        "--build",
+        "--preset",
+        "build-debug"
+      ],
+      "options": {
+        "cwd": "D:/Project/MSPM0G3507_VSCODE"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": ["$gcc"],
+      "detail": "按 build-debug 预设编译项目"
+    },
+    {
+      "label": "SysConfig",
+      "type": "shell",
+      "command": "powershell.exe",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "D:/Project/MSPM0G3507_VSCODE/.vscode/scripts/open-sysconfig.ps1",
+        "-WorkspaceFolder",
+        "D:/Project/MSPM0G3507_VSCODE"
+      ],
+      "group": "build",
+      "problemMatcher": [],
+      "detail": "打开 TI SysConfig 配置工具"
+    }
+  ]
+}
