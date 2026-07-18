@@ -9,9 +9,15 @@
 /**
  * Import the modules used in this configuration.
  */
+const ADC12         = scripting.addModule("/ti/driverlib/ADC12", {}, false);
+const ADC121        = ADC12.addInstance();
 const Board         = scripting.addModule("/ti/driverlib/Board");
 const GPIO          = scripting.addModule("/ti/driverlib/GPIO", {}, false);
 const GPIO1         = GPIO.addInstance();
+const GPIO2         = GPIO.addInstance();
+const GPIO3         = GPIO.addInstance();
+const GPIO4         = GPIO.addInstance();
+const GPIO5         = GPIO.addInstance();
 const MATHACL       = scripting.addModule("/ti/driverlib/MATHACL");
 const SYSCTL        = scripting.addModule("/ti/driverlib/SYSCTL");
 const UART          = scripting.addModule("/ti/driverlib/UART", {}, false);
@@ -48,44 +54,69 @@ const pinFunction6     = system.clockTree["LFXT"];
 pinFunction6.enable    = true;
 pinFunction6.inputFreq = 32.768;
 
+ADC121.$name                      = "ADC12_0";
+ADC121.sampleMode                 = "DL_ADC12_SAMPLING_SOURCE_MANUAL";
+ADC121.peripheral.adcPin0.$assign = "PA27";
+ADC121.adcPin0Config.$name        = "ti_driverlib_gpio_GPIOPinGeneric4";
 
-GPIO1.port                               = "PORTB";
-GPIO1.$name                              = "LED1";
-GPIO1.associatedPins[0].internalResistor = "PULL_DOWN";
-GPIO1.associatedPins[0].$name            = "PIN_22";
-GPIO1.associatedPins[0].assignedPin      = "22";
+
+GPIO1.port                          = "PORTB";
+GPIO1.$name                         = "LED1";
+GPIO1.associatedPins[0].$name       = "PIN_22";
+GPIO1.associatedPins[0].assignedPin = "22";
+
+GPIO2.$name                         = "AD0";
+GPIO2.port                          = "PORTA";
+GPIO2.associatedPins[0].$name       = "PIN_31";
+GPIO2.associatedPins[0].assignedPin = "31";
+GPIO2.associatedPins[0].pin.$assign = "PA31";
+
+GPIO3.$name                   = "AD1";
+GPIO3.port                    = "PORTA";
+GPIO3.associatedPins[0].$name = "PIN_12";
+
+GPIO4.$name                         = "AD2";
+GPIO4.port                          = "PORTB";
+GPIO4.associatedPins[0].$name       = "PIN_8";
+GPIO4.associatedPins[0].assignedPin = "8";
+
+GPIO5.$name                         = "EN";
+GPIO5.port                          = "PORTB";
+GPIO5.associatedPins[0].$name       = "PIN_27";
+GPIO5.associatedPins[0].assignedPin = "27";
 
 SYSCTL.powerSysInterrupts = ["FLASH_SEC"];
 SYSCTL.clockTreeEn        = true;
 
 UART1.$name                            = "IMU";
-UART1.targetBaudRate                   = 115200;
 UART1.enabledInterrupts                = ["RX"];
+UART1.targetBaudRate                   = 115200;
+UART1.uartClkDiv                       = "2";
 UART1.peripheral.rxPin.$assign         = "PB13";
 UART1.peripheral.txPin.$assign         = "PA26";
-UART1.txPinConfig.$name                = "ti_driverlib_gpio_GPIOPinGeneric0";
 UART1.txPinConfig.direction            = scripting.forceWrite("OUTPUT");
 UART1.txPinConfig.hideOutputInversion  = scripting.forceWrite(false);
 UART1.txPinConfig.onlyInternalResistor = scripting.forceWrite(false);
 UART1.txPinConfig.passedPeripheralType = scripting.forceWrite("Digital");
-UART1.rxPinConfig.$name                = "ti_driverlib_gpio_GPIOPinGeneric1";
+UART1.txPinConfig.$name                = "ti_driverlib_gpio_GPIOPinGeneric0";
 UART1.rxPinConfig.hideOutputInversion  = scripting.forceWrite(false);
 UART1.rxPinConfig.onlyInternalResistor = scripting.forceWrite(false);
 UART1.rxPinConfig.passedPeripheralType = scripting.forceWrite("Digital");
+UART1.rxPinConfig.$name                = "ti_driverlib_gpio_GPIOPinGeneric1";
 
 UART2.$name                            = "PRINT";
 UART2.targetBaudRate                   = 115200;
-UART2.peripheral.rxPin.$assign         = "PA31";
-UART2.peripheral.txPin.$assign         = "PA28";
-UART2.txPinConfig.$name                = "ti_driverlib_gpio_GPIOPinGeneric2";
+UART2.peripheral.rxPin.$assign         = "PA11";
+UART2.peripheral.txPin.$assign         = "PA10";
 UART2.txPinConfig.direction            = scripting.forceWrite("OUTPUT");
 UART2.txPinConfig.hideOutputInversion  = scripting.forceWrite(false);
 UART2.txPinConfig.onlyInternalResistor = scripting.forceWrite(false);
 UART2.txPinConfig.passedPeripheralType = scripting.forceWrite("Digital");
-UART2.rxPinConfig.$name                = "ti_driverlib_gpio_GPIOPinGeneric3";
+UART2.txPinConfig.$name                = "ti_driverlib_gpio_GPIOPinGeneric2";
 UART2.rxPinConfig.hideOutputInversion  = scripting.forceWrite(false);
 UART2.rxPinConfig.onlyInternalResistor = scripting.forceWrite(false);
 UART2.rxPinConfig.passedPeripheralType = scripting.forceWrite("Digital");
+UART2.rxPinConfig.$name                = "ti_driverlib_gpio_GPIOPinGeneric3";
 
 ProjectConfig.genLibDrivers = true;
 ProjectConfig.genLinker     = false;
@@ -105,9 +136,13 @@ pinFunction4.peripheral.hfxOutPin.$suggestSolution = "PA6";
 pinFunction6.peripheral.$suggestSolution           = "SYSCTL";
 pinFunction6.peripheral.lfxInPin.$suggestSolution  = "PA3";
 pinFunction6.peripheral.lfxOutPin.$suggestSolution = "PA4";
+ADC121.peripheral.$suggestSolution                 = "ADC0";
 Board.peripheral.$suggestSolution                  = "DEBUGSS";
 Board.peripheral.swclkPin.$suggestSolution         = "PA20";
 Board.peripheral.swdioPin.$suggestSolution         = "PA19";
 GPIO1.associatedPins[0].pin.$suggestSolution       = "PB22";
+GPIO3.associatedPins[0].pin.$suggestSolution       = "PA12";
+GPIO4.associatedPins[0].pin.$suggestSolution       = "PB8";
+GPIO5.associatedPins[0].pin.$suggestSolution       = "PB27";
 UART1.peripheral.$suggestSolution                  = "UART3";
 UART2.peripheral.$suggestSolution                  = "UART0";

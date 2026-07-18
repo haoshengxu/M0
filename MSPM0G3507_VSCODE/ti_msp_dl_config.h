@@ -96,7 +96,7 @@ bool SYSCFG_DL_SYSCTL_SYSPLL_init(void);
 
 /* Defines for IMU */
 #define IMU_INST                                                           UART3
-#define IMU_INST_FREQUENCY                                              80000000
+#define IMU_INST_FREQUENCY                                              40000000
 #define IMU_INST_IRQHandler                                     UART3_IRQHandler
 #define IMU_INST_INT_IRQN                                         UART3_INT_IRQn
 #define GPIO_IMU_RX_PORT                                                   GPIOB
@@ -108,8 +108,8 @@ bool SYSCFG_DL_SYSCTL_SYSPLL_init(void);
 #define GPIO_IMU_IOMUX_RX_FUNC                         IOMUX_PINCM30_PF_UART3_RX
 #define GPIO_IMU_IOMUX_TX_FUNC                         IOMUX_PINCM59_PF_UART3_TX
 #define IMU_BAUD_RATE                                                   (115200)
-#define IMU_IBRD_80_MHZ_115200_BAUD                                         (43)
-#define IMU_FBRD_80_MHZ_115200_BAUD                                         (26)
+#define IMU_IBRD_40_MHZ_115200_BAUD                                         (21)
+#define IMU_FBRD_40_MHZ_115200_BAUD                                         (45)
 /* Defines for PRINT */
 #define PRINT_INST                                                         UART0
 #define PRINT_INST_FREQUENCY                                            40000000
@@ -117,17 +117,31 @@ bool SYSCFG_DL_SYSCTL_SYSPLL_init(void);
 #define PRINT_INST_INT_IRQN                                       UART0_INT_IRQn
 #define GPIO_PRINT_RX_PORT                                                 GPIOA
 #define GPIO_PRINT_TX_PORT                                                 GPIOA
-#define GPIO_PRINT_RX_PIN                                         DL_GPIO_PIN_31
-#define GPIO_PRINT_TX_PIN                                         DL_GPIO_PIN_28
-#define GPIO_PRINT_IOMUX_RX                                       (IOMUX_PINCM6)
-#define GPIO_PRINT_IOMUX_TX                                       (IOMUX_PINCM3)
-#define GPIO_PRINT_IOMUX_RX_FUNC                        IOMUX_PINCM6_PF_UART0_RX
-#define GPIO_PRINT_IOMUX_TX_FUNC                        IOMUX_PINCM3_PF_UART0_TX
+#define GPIO_PRINT_RX_PIN                                         DL_GPIO_PIN_11
+#define GPIO_PRINT_TX_PIN                                         DL_GPIO_PIN_10
+#define GPIO_PRINT_IOMUX_RX                                      (IOMUX_PINCM22)
+#define GPIO_PRINT_IOMUX_TX                                      (IOMUX_PINCM21)
+#define GPIO_PRINT_IOMUX_RX_FUNC                       IOMUX_PINCM22_PF_UART0_RX
+#define GPIO_PRINT_IOMUX_TX_FUNC                       IOMUX_PINCM21_PF_UART0_TX
 #define PRINT_BAUD_RATE                                                 (115200)
 #define PRINT_IBRD_40_MHZ_115200_BAUD                                       (21)
 #define PRINT_FBRD_40_MHZ_115200_BAUD                                       (45)
 
 
+
+
+
+/* Defines for ADC12_0 */
+#define ADC12_0_INST                                                        ADC0
+#define ADC12_0_INST_IRQHandler                                  ADC0_IRQHandler
+#define ADC12_0_INST_INT_IRQN                                    (ADC0_INT_IRQn)
+#define ADC12_0_ADCMEM_0                                      DL_ADC12_MEM_IDX_0
+#define ADC12_0_ADCMEM_0_REF                     DL_ADC12_REFERENCE_VOLTAGE_VDDA
+#define ADC12_0_ADCMEM_0_REF_VOLTAGE_V                                       3.3
+#define GPIO_ADC12_0_C0_PORT                                               GPIOA
+#define GPIO_ADC12_0_C0_PIN                                       DL_GPIO_PIN_27
+#define GPIO_ADC12_0_IOMUX_C0                                    (IOMUX_PINCM60)
+#define GPIO_ADC12_0_IOMUX_C0_FUNC                (IOMUX_PINCM60_PF_UNCONNECTED)
 
 
 
@@ -137,6 +151,30 @@ bool SYSCFG_DL_SYSCTL_SYSPLL_init(void);
 /* Defines for PIN_22: GPIOB.22 with pinCMx 50 on package pin 21 */
 #define LED1_PIN_22_PIN                                         (DL_GPIO_PIN_22)
 #define LED1_PIN_22_IOMUX                                        (IOMUX_PINCM50)
+/* Port definition for Pin Group AD0 */
+#define AD0_PORT                                                         (GPIOA)
+
+/* Defines for PIN_31: GPIOA.31 with pinCMx 6 on package pin 39 */
+#define AD0_PIN_31_PIN                                          (DL_GPIO_PIN_31)
+#define AD0_PIN_31_IOMUX                                          (IOMUX_PINCM6)
+/* Port definition for Pin Group AD1 */
+#define AD1_PORT                                                         (GPIOA)
+
+/* Defines for PIN_12: GPIOA.12 with pinCMx 34 on package pin 5 */
+#define AD1_PIN_12_PIN                                          (DL_GPIO_PIN_12)
+#define AD1_PIN_12_IOMUX                                         (IOMUX_PINCM34)
+/* Port definition for Pin Group AD2 */
+#define AD2_PORT                                                         (GPIOB)
+
+/* Defines for PIN_8: GPIOB.8 with pinCMx 25 on package pin 60 */
+#define AD2_PIN_8_PIN                                            (DL_GPIO_PIN_8)
+#define AD2_PIN_8_IOMUX                                          (IOMUX_PINCM25)
+/* Port definition for Pin Group EN */
+#define EN_PORT                                                          (GPIOB)
+
+/* Defines for PIN_27: GPIOB.27 with pinCMx 58 on package pin 29 */
+#define EN_PIN_27_PIN                                           (DL_GPIO_PIN_27)
+#define EN_PIN_27_IOMUX                                          (IOMUX_PINCM58)
 
 
 
@@ -151,6 +189,7 @@ void SYSCFG_DL_SYSCTL_init(void);
 bool SYSCFG_DL_SYSCTL_SYSPLL_init(void);
 void SYSCFG_DL_IMU_init(void);
 void SYSCFG_DL_PRINT_init(void);
+void SYSCFG_DL_ADC12_0_init(void);
 
 
 

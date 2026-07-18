@@ -54,6 +54,7 @@ SYSCONFIG_WEAK void SYSCFG_DL_init(void)
     SYSCFG_DL_SYSCTL_init();
     SYSCFG_DL_IMU_init();
     SYSCFG_DL_PRINT_init();
+    SYSCFG_DL_ADC12_0_init();
     /* Ensure backup structures have no valid state */
 	gIMUBackup.backupRdy 	= false;
 
@@ -87,12 +88,14 @@ SYSCONFIG_WEAK void SYSCFG_DL_initPower(void)
     DL_GPIO_reset(GPIOB);
     DL_UART_Main_reset(IMU_INST);
     DL_UART_Main_reset(PRINT_INST);
+    DL_ADC12_reset(ADC12_0_INST);
     DL_MathACL_reset(MATHACL);
 
     DL_GPIO_enablePower(GPIOA);
     DL_GPIO_enablePower(GPIOB);
     DL_UART_Main_enablePower(IMU_INST);
     DL_UART_Main_enablePower(PRINT_INST);
+    DL_ADC12_enablePower(ADC12_0_INST);
     DL_MathACL_enablePower(MATHACL);
     delay_cycles(POWER_STARTUP_DELAY);
 }
@@ -114,12 +117,26 @@ SYSCONFIG_WEAK void SYSCFG_DL_GPIO_init(void)
     DL_GPIO_initPeripheralInputFunction(
         GPIO_PRINT_IOMUX_RX, GPIO_PRINT_IOMUX_RX_FUNC);
 
-    DL_GPIO_initDigitalOutputFeatures(LED1_PIN_22_IOMUX,
-		 DL_GPIO_INVERSION_DISABLE, DL_GPIO_RESISTOR_PULL_DOWN,
-		 DL_GPIO_DRIVE_STRENGTH_LOW, DL_GPIO_HIZ_DISABLE);
+    DL_GPIO_initDigitalOutput(LED1_PIN_22_IOMUX);
 
-    DL_GPIO_clearPins(LED1_PORT, LED1_PIN_22_PIN);
-    DL_GPIO_enableOutput(LED1_PORT, LED1_PIN_22_PIN);
+    DL_GPIO_initDigitalOutput(AD0_PIN_31_IOMUX);
+
+    DL_GPIO_initDigitalOutput(AD1_PIN_12_IOMUX);
+
+    DL_GPIO_initDigitalOutput(AD2_PIN_8_IOMUX);
+
+    DL_GPIO_initDigitalOutput(EN_PIN_27_IOMUX);
+
+    DL_GPIO_clearPins(GPIOA, AD0_PIN_31_PIN |
+		AD1_PIN_12_PIN);
+    DL_GPIO_enableOutput(GPIOA, AD0_PIN_31_PIN |
+		AD1_PIN_12_PIN);
+    DL_GPIO_clearPins(GPIOB, LED1_PIN_22_PIN |
+		AD2_PIN_8_PIN |
+		EN_PIN_27_PIN);
+    DL_GPIO_enableOutput(GPIOB, LED1_PIN_22_PIN |
+		AD2_PIN_8_PIN |
+		EN_PIN_27_PIN);
 
 }
 
@@ -241,7 +258,7 @@ SYSCONFIG_WEAK void SYSCFG_DL_SYSCTL_init(void)
 
 static const DL_UART_Main_ClockConfig gIMUClockConfig = {
     .clockSel    = DL_UART_MAIN_CLOCK_BUSCLK,
-    .divideRatio = DL_UART_MAIN_CLOCK_DIVIDE_RATIO_1
+    .divideRatio = DL_UART_MAIN_CLOCK_DIVIDE_RATIO_2
 };
 
 static const DL_UART_Main_Config gIMUConfig = {
@@ -264,7 +281,7 @@ SYSCONFIG_WEAK void SYSCFG_DL_IMU_init(void)
      *  Actual baud rate: 115190.78
      */
     DL_UART_Main_setOversampling(IMU_INST, DL_UART_OVERSAMPLING_RATE_16X);
-    DL_UART_Main_setBaudRateDivisor(IMU_INST, IMU_IBRD_80_MHZ_115200_BAUD, IMU_FBRD_80_MHZ_115200_BAUD);
+    DL_UART_Main_setBaudRateDivisor(IMU_INST, IMU_IBRD_40_MHZ_115200_BAUD, IMU_FBRD_40_MHZ_115200_BAUD);
 
 
     /* Configure Interrupts */
@@ -304,5 +321,23 @@ SYSCONFIG_WEAK void SYSCFG_DL_PRINT_init(void)
 
 
     DL_UART_Main_enable(PRINT_INST);
+}
+
+/* ADC12_0 Initialization */
+static const DL_ADC12_ClockConfig gADC12_0ClockConfig = {
+    .clockSel       = DL_ADC12_CLOCK_SYSOSC,
+    .divideRatio    = DL_ADC12_CLOCK_DIVIDE_1,
+    .freqRange      = DL_ADC12_CLOCK_FREQ_RANGE_24_TO_32,
+};
+SYSCONFIG_WEAK void SYSCFG_DL_ADC12_0_init(void)
+{
+    DL_ADC12_setClockConfig(ADC12_0_INST, (DL_ADC12_ClockConfig *) &gADC12_0ClockConfig);
+    DL_ADC12_initSingleSample(ADC12_0_INST,
+        DL_ADC12_REPEAT_MODE_DISABLED, DL_ADC12_SAMPLING_SOURCE_MANUAL, DL_ADC12_TRIG_SRC_SOFTWARE,
+        DL_ADC12_SAMP_CONV_RES_12_BIT, DL_ADC12_SAMP_CONV_DATA_FORMAT_UNSIGNED);
+    DL_ADC12_configConversionMem(ADC12_0_INST, ADC12_0_ADCMEM_0,
+        DL_ADC12_INPUT_CHAN_0, DL_ADC12_REFERENCE_VOLTAGE_VDDA, DL_ADC12_SAMPLE_TIMER_SOURCE_SCOMP0, DL_ADC12_AVERAGING_MODE_DISABLED,
+        DL_ADC12_BURN_OUT_SOURCE_DISABLED, DL_ADC12_TRIGGER_MODE_AUTO_NEXT, DL_ADC12_WINDOWS_COMP_MODE_DISABLED);
+    DL_ADC12_enableConversions(ADC12_0_INST);
 }
 
