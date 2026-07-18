@@ -26,6 +26,9 @@ if not "%ELF_COUNT%"=="1" (
 )
 
 (
+    echo gdb_port disabled
+    echo tcl_port disabled
+    echo telnet_port disabled
     echo program "%ELF:\=/%" verify
     echo reset run
     echo exit

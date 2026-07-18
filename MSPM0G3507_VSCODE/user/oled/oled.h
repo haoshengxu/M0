@@ -325,6 +325,7 @@ void OLED_ShowPicture(u8 x0,u8 y0,u8 x1,u8 y1,u8 BMP[]);
  * - 初始化完成后通常会清屏
  */
 void OLED_Init(void);
+int  OLED_IsDisabled(void);  /* 返回 1 表示 OLED 已降级关闭 */
 
 
 #endif

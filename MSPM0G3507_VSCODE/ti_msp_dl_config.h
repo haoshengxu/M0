@@ -94,6 +94,50 @@ extern "C" {
 bool SYSCFG_DL_SYSCTL_SYSPLL_init(void);
 
 
+/* Defines for PWMB */
+#define PWMB_INST                                                          TIMA0
+#define PWMB_INST_IRQHandler                                    TIMA0_IRQHandler
+#define PWMB_INST_INT_IRQN                                      (TIMA0_INT_IRQn)
+#define PWMB_INST_CLK_FREQ                                              80000000
+/* GPIO defines for channel 0 */
+#define GPIO_PWMB_C0_PORT                                                  GPIOA
+#define GPIO_PWMB_C0_PIN                                           DL_GPIO_PIN_0
+#define GPIO_PWMB_C0_IOMUX                                        (IOMUX_PINCM1)
+#define GPIO_PWMB_C0_IOMUX_FUNC                       IOMUX_PINCM1_PF_TIMA0_CCP0
+#define GPIO_PWMB_C0_IDX                                     DL_TIMER_CC_0_INDEX
+/* GPIO defines for channel 0 */
+#define GPIO_PWMB_C0_CMPL_PORT                                             GPIOA
+#define GPIO_PWMB_C0_CMPL_PIN                                     DL_GPIO_PIN_22
+#define GPIO_PWMB_C0_CMPL_IOMUX                                  (IOMUX_PINCM47)
+#define GPIO_PWMB_C0_CMPL_IOMUX_FUNC            IOMUX_PINCM47_PF_TIMA0_CCP0_CMPL
+
+/* GPIO defines for channel 1 */
+#define GPIO_PWMB_C1_PORT                                                  GPIOB
+#define GPIO_PWMB_C1_PIN                                          DL_GPIO_PIN_20
+#define GPIO_PWMB_C1_IOMUX                                       (IOMUX_PINCM48)
+#define GPIO_PWMB_C1_IOMUX_FUNC                      IOMUX_PINCM48_PF_TIMA0_CCP1
+#define GPIO_PWMB_C1_IDX                                     DL_TIMER_CC_1_INDEX
+
+/* Defines for PWMA */
+#define PWMA_INST                                                          TIMA1
+#define PWMA_INST_IRQHandler                                    TIMA1_IRQHandler
+#define PWMA_INST_INT_IRQN                                      (TIMA1_INT_IRQn)
+#define PWMA_INST_CLK_FREQ                                              80000000
+/* GPIO defines for channel 0 */
+#define GPIO_PWMA_C0_PORT                                                  GPIOA
+#define GPIO_PWMA_C0_PIN                                          DL_GPIO_PIN_28
+#define GPIO_PWMA_C0_IOMUX                                        (IOMUX_PINCM3)
+#define GPIO_PWMA_C0_IOMUX_FUNC                       IOMUX_PINCM3_PF_TIMA1_CCP0
+#define GPIO_PWMA_C0_IDX                                     DL_TIMER_CC_0_INDEX
+/* GPIO defines for channel 1 */
+#define GPIO_PWMA_C1_PORT                                                  GPIOA
+#define GPIO_PWMA_C1_PIN                                          DL_GPIO_PIN_16
+#define GPIO_PWMA_C1_IOMUX                                       (IOMUX_PINCM38)
+#define GPIO_PWMA_C1_IOMUX_FUNC                      IOMUX_PINCM38_PF_TIMA1_CCP1
+#define GPIO_PWMA_C1_IDX                                     DL_TIMER_CC_1_INDEX
+
+
+
 
 /* Defines for OLED */
 #define OLED_INST                                                           I2C1
@@ -196,6 +240,62 @@ bool SYSCFG_DL_SYSCTL_SYSPLL_init(void);
 /* Defines for PIN_27: GPIOB.27 with pinCMx 58 on package pin 29 */
 #define EN_PIN_27_PIN                                           (DL_GPIO_PIN_27)
 #define EN_PIN_27_IOMUX                                          (IOMUX_PINCM58)
+/* Port definition for Pin Group AIN1 */
+#define AIN1_PORT                                                        (GPIOA)
+
+/* Defines for PIN_13: GPIOA.13 with pinCMx 35 on package pin 6 */
+#define AIN1_PIN_13_PIN                                         (DL_GPIO_PIN_13)
+#define AIN1_PIN_13_IOMUX                                        (IOMUX_PINCM35)
+/* Port definition for Pin Group AIN2 */
+#define AIN2_PORT                                                        (GPIOB)
+
+/* Defines for PIN_26: GPIOB.26 with pinCMx 57 on package pin 28 */
+#define AIN2_PIN_26_PIN                                         (DL_GPIO_PIN_26)
+#define AIN2_PIN_26_IOMUX                                        (IOMUX_PINCM57)
+/* Port definition for Pin Group BIN1 */
+#define BIN1_PORT                                                        (GPIOB)
+
+/* Defines for PIN_9: GPIOB.9 with pinCMx 26 on package pin 61 */
+#define BIN1_PIN_9_PIN                                           (DL_GPIO_PIN_9)
+#define BIN1_PIN_9_IOMUX                                         (IOMUX_PINCM26)
+/* Port definition for Pin Group BIN2 */
+#define BIN2_PORT                                                        (GPIOB)
+
+/* Defines for PIN_7: GPIOB.7 with pinCMx 24 on package pin 59 */
+#define BIN2_PIN_7_PIN                                           (DL_GPIO_PIN_7)
+#define BIN2_PIN_7_IOMUX                                         (IOMUX_PINCM24)
+/* Port definition for Pin Group E1A */
+#define E1A_PORT                                                         (GPIOB)
+
+/* Defines for PIN_E1A: GPIOB.12 with pinCMx 29 on package pin 64 */
+// groups represented: ["E1B","E2A","E2B","E1A"]
+// pins affected: ["PIN_E1B","PIN_E2A","PIN_E2B","PIN_E1A"]
+#define GPIO_MULTIPLE_GPIOB_INT_IRQN                            (GPIOB_INT_IRQn)
+#define GPIO_MULTIPLE_GPIOB_INT_IIDX            (DL_INTERRUPT_GROUP1_IIDX_GPIOB)
+#define E1A_PIN_E1A_IIDX                                    (DL_GPIO_IIDX_DIO12)
+#define E1A_PIN_E1A_PIN                                         (DL_GPIO_PIN_12)
+#define E1A_PIN_E1A_IOMUX                                        (IOMUX_PINCM29)
+/* Port definition for Pin Group E1B */
+#define E1B_PORT                                                         (GPIOB)
+
+/* Defines for PIN_E1B: GPIOB.23 with pinCMx 51 on package pin 22 */
+#define E1B_PIN_E1B_IIDX                                    (DL_GPIO_IIDX_DIO23)
+#define E1B_PIN_E1B_PIN                                         (DL_GPIO_PIN_23)
+#define E1B_PIN_E1B_IOMUX                                        (IOMUX_PINCM51)
+/* Port definition for Pin Group E2A */
+#define E2A_PORT                                                         (GPIOB)
+
+/* Defines for PIN_E2A: GPIOB.4 with pinCMx 17 on package pin 52 */
+#define E2A_PIN_E2A_IIDX                                     (DL_GPIO_IIDX_DIO4)
+#define E2A_PIN_E2A_PIN                                          (DL_GPIO_PIN_4)
+#define E2A_PIN_E2A_IOMUX                                        (IOMUX_PINCM17)
+/* Port definition for Pin Group E2B */
+#define E2B_PORT                                                         (GPIOB)
+
+/* Defines for PIN_E2B: GPIOB.5 with pinCMx 18 on package pin 53 */
+#define E2B_PIN_E2B_IIDX                                     (DL_GPIO_IIDX_DIO5)
+#define E2B_PIN_E2B_PIN                                          (DL_GPIO_PIN_5)
+#define E2B_PIN_E2B_IOMUX                                        (IOMUX_PINCM18)
 
 
 
@@ -208,6 +308,8 @@ void SYSCFG_DL_GPIO_init(void);
 void SYSCFG_DL_SYSCTL_init(void);
 
 bool SYSCFG_DL_SYSCTL_SYSPLL_init(void);
+void SYSCFG_DL_PWMB_init(void);
+void SYSCFG_DL_PWMA_init(void);
 void SYSCFG_DL_OLED_init(void);
 void SYSCFG_DL_IMU_init(void);
 void SYSCFG_DL_PRINT_init(void);

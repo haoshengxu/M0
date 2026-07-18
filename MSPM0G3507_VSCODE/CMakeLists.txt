@@ -151,6 +151,8 @@ set(COMMON_INCLUDE_DIRECTORIES
         ${CMAKE_SOURCE_DIR}/user/imu601
         ${CMAKE_SOURCE_DIR}/user/line_sensor
         ${CMAKE_SOURCE_DIR}/user/oled
+        ${CMAKE_SOURCE_DIR}/user/motor
+        ${CMAKE_SOURCE_DIR}/user/encoder
 )
 
 # 根据开关添加对应的头文件目录

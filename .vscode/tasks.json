@@ -36,6 +36,21 @@
       "group": "build",
       "problemMatcher": [],
       "detail": "打开 TI SysConfig 配置工具"
+    },
+    {
+      "label": "Flash",
+      "type": "shell",
+      "command": "D:\\DevEnv\\OpenOCD-20260121-0.12.0\\bin\\openocd.exe",
+      "args": [
+        "-s", "D:\\DevEnv\\OpenOCD-20260121-0.12.0\\share\\openocd\\scripts",
+        "-f", "interface/cmsis-dap.cfg",
+        "-c", "transport select swd; adapter speed 8000",
+        "-f", "target/ti/mspm0.cfg",
+        "-c", "program D:/Project/MSPM0G3507_VSCODE/build/MSPM0.elf verify reset exit"
+      ],
+      "group": "build",
+      "problemMatcher": [],
+      "detail": "烧录固件到 MCU（不进 Debug）"
     }
   ]
 }

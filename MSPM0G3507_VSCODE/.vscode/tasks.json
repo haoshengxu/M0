@@ -80,7 +80,7 @@
       ],
       "dependsOn": "Build",
       "dependsOrder": "sequence",
-      "group": "test",
+      "group": "build",
       "problemMatcher": [],
       "detail": "先执行 Build，再烧录固件到 MSPM0G3507，完成后执行软件复位"
     }

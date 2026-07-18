@@ -27,11 +27,40 @@ void OLED_DisplayTurn(u8 i)
 	}
 }
 
-/* I2C 超时后自动恢复 */
-static void i2c_recover(void)
+/* 接触不良时静默跳过，不死机不黑屏 */
+int OLED_IsDisabled(void) { return 0; }
+
+/* I2C 总线恢复：发 9 个 SCL 脉冲让从机释放 SDA */
+static void i2c_bus_clear(void)
 {
+    DL_I2C_disableController(OLED_INST);
+
+    /* SCL 临时切为 GPIO 输出，手动发 9 个时钟脉冲 */
+    DL_GPIO_initDigitalOutput(GPIO_OLED_IOMUX_SCL);
+    DL_GPIO_clearPins(GPIO_OLED_SCL_PORT, GPIO_OLED_SCL_PIN);
+    delay_cycles(80);
+    for (int i = 0; i < 9; i++) {
+        DL_GPIO_setPins(GPIO_OLED_SCL_PORT, GPIO_OLED_SCL_PIN);
+        delay_cycles(80);
+        DL_GPIO_clearPins(GPIO_OLED_SCL_PORT, GPIO_OLED_SCL_PIN);
+        delay_cycles(80);
+    }
+    /* STOP 条件：SCL 高，SDA 保持输入（上拉拉高） */
+    DL_GPIO_setPins(GPIO_OLED_SCL_PORT, GPIO_OLED_SCL_PIN);
+    delay_cycles(80);
+
+    /* 恢复 I2C 外设 + 上拉 */
+    DL_GPIO_initPeripheralInputFunctionFeatures(GPIO_OLED_IOMUX_SDA,
+        GPIO_OLED_IOMUX_SDA_FUNC, DL_GPIO_INVERSION_DISABLE,
+        DL_GPIO_RESISTOR_PULL_UP, DL_GPIO_HYSTERESIS_DISABLE,
+        DL_GPIO_WAKEUP_DISABLE);
+    DL_GPIO_initPeripheralInputFunctionFeatures(GPIO_OLED_IOMUX_SCL,
+        GPIO_OLED_IOMUX_SCL_FUNC, DL_GPIO_INVERSION_DISABLE,
+        DL_GPIO_RESISTOR_PULL_UP, DL_GPIO_HYSTERESIS_DISABLE,
+        DL_GPIO_WAKEUP_DISABLE);
+
     DL_I2C_resetControllerTransfer(OLED_INST);
-    DL_I2C_setTimerPeriod(OLED_INST, 9); /* 400kHz */
+    DL_I2C_setTimerPeriod(OLED_INST, 9);
     DL_I2C_enableController(OLED_INST);
 }
 
@@ -43,7 +72,6 @@ void OLED_WR_Byte(uint8_t dat, uint8_t mode)
     txData[0] = mode ? 0x40 : 0x00;
     txData[1] = dat;
 
-    /* 最多等 500us，超时跳过（控制器上电后首次可能不在空闲） */
     timeout = 0;
     while (!(DL_I2C_getControllerStatus(OLED_INST) & DL_I2C_CONTROLLER_STATUS_IDLE)) {
         if (++timeout > 50000) break;
@@ -54,7 +82,7 @@ void OLED_WR_Byte(uint8_t dat, uint8_t mode)
 
     timeout = 0;
     while (!(DL_I2C_getControllerStatus(OLED_INST) & DL_I2C_CONTROLLER_STATUS_IDLE)) {
-        if (++timeout > 5000000) { i2c_recover(); return; }
+        if (++timeout > 5000000) { i2c_bus_clear(); return; }
     }
 }
 

@@ -27,6 +27,8 @@
 #include "uart.h"
 #include "line_sensor.h"
 #include "oled.h"
+#include "motor.h"
+#include "encoder.h"
 #include <stdio.h>
 
 /* oled.c 需要 delay_ms */
@@ -39,6 +41,7 @@ void delay_ms(uint32_t ms)
 
 extern Attitude_t current_attitude;
 extern volatile uint32_t imu_rx_count;
+extern volatile uint32_t g_irq1_count;
 extern volatile uint32_t imu_frame_count;
 
 int main(void)
@@ -46,14 +49,26 @@ int main(void)
     SYSCFG_DL_init();
     IMU601_init();
     LineSensor_init();
+    Motor_Init();
+    Encoder_Init();
 
-    /* OLED 初始化 */
-    OLED_Init();
-    OLED_ColorTurn(0);
-    OLED_DisplayTurn(0);
-    OLED_Clear();
+    /* 启用 GPIOB 中断（编码器 COUNT） */
+    NVIC_EnableIRQ(1);  /* GPIOB 所有中断（编码器 COUNT） */
+
+    /* OLED 初始化 — 暂时关闭排查问题 */
+    // OLED_Init();
+    // OLED_ColorTurn(0);
+    // OLED_DisplayTurn(0);
+    // OLED_Clear();
+
+    /* 电机测试：A 5% 正转，B 5% 正转 */
+    MotorA_SetSpeed(0);
+    MotorB_SetSpeed(0);
 
     UART_send_string(PRINT_INST, "System Ready\r\n");
+
+    int32_t last_enc1 = 0, last_enc2 = 0;
+    #define LOOP_MS  200
 
     while (1)
     {
@@ -71,35 +86,19 @@ int main(void)
         }
 
         /* ---- 串口输出 ---- */
+        int32_t e1 = g_enc1_count, e2 = g_enc2_count;
+        int32_t d1 = e1 - last_enc1, d2 = e2 - last_enc2;
+        last_enc1 = e1; last_enc2 = e2;
+
         char buf[200];
         sprintf(buf,
-                "LS:%4u %4u %4u %4u %4u %4u %4u %4u | BLK:%d%d%d%d%d%d%d%d\r\n",
-                ls[0], ls[1], ls[2], ls[3], ls[4], ls[5], ls[6], ls[7],
-                (black_line>>0)&1, (black_line>>1)&1,
-                (black_line>>2)&1, (black_line>>3)&1,
-                (black_line>>4)&1, (black_line>>5)&1,
-                (black_line>>6)&1, (black_line>>7)&1);
+                "E1:%ld(%ldrpm) E2:%ld(%ldrpm)\r\n",
+                (long)e1, (long)Encoder_MotorRPM(d1, LOOP_MS),
+                (long)e2, (long)Encoder_MotorRPM(d2, LOOP_MS));
         UART_send_string(PRINT_INST, buf);
 
-        /* ---- OLED 显示 IMU 数据 ---- */
-        char oled_str[30];
+        /* ---- OLED 暂时关闭 ---- */
 
-        sprintf(oled_str, "Yaw:%.1f", current_attitude.yaw);
-        OLED_ShowString(0, 0, (u8 *)oled_str, 16);
-
-        sprintf(oled_str, "Pt:%.1f Rl:%.1f", current_attitude.pitch, current_attitude.roll);
-        OLED_ShowString(0, 16, (u8 *)oled_str, 16);
-
-        /* 黑线状态显示 */
-        sprintf(oled_str, "BLK:%d%d%d%d%d%d%d%d",
-                (black_line>>0)&1, (black_line>>1)&1,
-                (black_line>>2)&1, (black_line>>3)&1,
-                (black_line>>4)&1, (black_line>>5)&1,
-                (black_line>>6)&1, (black_line>>7)&1);
-        OLED_ShowString(0, 32, (u8 *)oled_str, 16);
-
-        OLED_Refresh();
-
-        delay_ms(200);
+        delay_ms(LOOP_MS);
     }
 }
