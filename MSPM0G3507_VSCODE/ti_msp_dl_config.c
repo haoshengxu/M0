@@ -55,6 +55,7 @@ SYSCONFIG_WEAK void SYSCFG_DL_init(void)
     SYSCFG_DL_IMU_init();
     SYSCFG_DL_PRINT_init();
     SYSCFG_DL_ADC12_0_init();
+    SYSCFG_DL_DMA_init();
     /* Ensure backup structures have no valid state */
 	gIMUBackup.backupRdy 	= false;
 
@@ -89,6 +90,7 @@ SYSCONFIG_WEAK void SYSCFG_DL_initPower(void)
     DL_UART_Main_reset(IMU_INST);
     DL_UART_Main_reset(PRINT_INST);
     DL_ADC12_reset(ADC12_0_INST);
+
     DL_MathACL_reset(MATHACL);
 
     DL_GPIO_enablePower(GPIOA);
@@ -96,6 +98,7 @@ SYSCONFIG_WEAK void SYSCFG_DL_initPower(void)
     DL_UART_Main_enablePower(IMU_INST);
     DL_UART_Main_enablePower(PRINT_INST);
     DL_ADC12_enablePower(ADC12_0_INST);
+
     DL_MathACL_enablePower(MATHACL);
     delay_cycles(POWER_STARTUP_DELAY);
 }
@@ -333,11 +336,35 @@ SYSCONFIG_WEAK void SYSCFG_DL_ADC12_0_init(void)
 {
     DL_ADC12_setClockConfig(ADC12_0_INST, (DL_ADC12_ClockConfig *) &gADC12_0ClockConfig);
     DL_ADC12_initSingleSample(ADC12_0_INST,
-        DL_ADC12_REPEAT_MODE_DISABLED, DL_ADC12_SAMPLING_SOURCE_MANUAL, DL_ADC12_TRIG_SRC_SOFTWARE,
+        DL_ADC12_REPEAT_MODE_ENABLED, DL_ADC12_SAMPLING_SOURCE_AUTO, DL_ADC12_TRIG_SRC_SOFTWARE,
         DL_ADC12_SAMP_CONV_RES_12_BIT, DL_ADC12_SAMP_CONV_DATA_FORMAT_UNSIGNED);
+    DL_ADC12_setSampleTime0(ADC12_0_INST, 10);
     DL_ADC12_configConversionMem(ADC12_0_INST, ADC12_0_ADCMEM_0,
         DL_ADC12_INPUT_CHAN_0, DL_ADC12_REFERENCE_VOLTAGE_VDDA, DL_ADC12_SAMPLE_TIMER_SOURCE_SCOMP0, DL_ADC12_AVERAGING_MODE_DISABLED,
         DL_ADC12_BURN_OUT_SOURCE_DISABLED, DL_ADC12_TRIGGER_MODE_AUTO_NEXT, DL_ADC12_WINDOWS_COMP_MODE_DISABLED);
+    DL_ADC12_enableDMA(ADC12_0_INST);
+    DL_ADC12_setDMASamplesCnt(ADC12_0_INST,1);
+    DL_ADC12_enableDMATrigger(ADC12_0_INST,(DL_ADC12_DMA_MEM0_RESULT_LOADED));
     DL_ADC12_enableConversions(ADC12_0_INST);
 }
+
+static const DL_DMA_Config gDMA_CH0Config = {
+    .transferMode   = DL_DMA_FULL_CH_REPEAT_SINGLE_TRANSFER_MODE,
+    .extendedMode   = DL_DMA_NORMAL_MODE,
+    .destIncrement  = DL_DMA_ADDR_INCREMENT,
+    .srcIncrement   = DL_DMA_ADDR_UNCHANGED,
+    .destWidth      = DL_DMA_WIDTH_HALF_WORD,
+    .srcWidth       = DL_DMA_WIDTH_HALF_WORD,
+    .trigger        = ADC12_0_INST_DMA_TRIGGER,
+    .triggerType    = DL_DMA_TRIGGER_TYPE_EXTERNAL,
+};
+
+SYSCONFIG_WEAK void SYSCFG_DL_DMA_CH0_init(void)
+{
+    DL_DMA_initChannel(DMA, DMA_CH0_CHAN_ID , (DL_DMA_Config *) &gDMA_CH0Config);
+}
+SYSCONFIG_WEAK void SYSCFG_DL_DMA_init(void){
+    SYSCFG_DL_DMA_CH0_init();
+}
+
 

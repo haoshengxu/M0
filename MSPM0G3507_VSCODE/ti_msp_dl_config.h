@@ -145,6 +145,11 @@ bool SYSCFG_DL_SYSCTL_SYSPLL_init(void);
 
 
 
+/* Defines for DMA_CH0 */
+#define DMA_CH0_CHAN_ID                                                      (0)
+#define ADC12_0_INST_DMA_TRIGGER                      (DMA_ADC0_EVT_GEN_BD_TRIG)
+
+
 /* Port definition for Pin Group LED1 */
 #define LED1_PORT                                                        (GPIOB)
 
@@ -190,6 +195,7 @@ bool SYSCFG_DL_SYSCTL_SYSPLL_init(void);
 void SYSCFG_DL_IMU_init(void);
 void SYSCFG_DL_PRINT_init(void);
 void SYSCFG_DL_ADC12_0_init(void);
+void SYSCFG_DL_DMA_init(void);
 
 
 

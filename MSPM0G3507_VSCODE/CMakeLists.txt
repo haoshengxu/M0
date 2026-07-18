@@ -149,6 +149,7 @@ set(COMMON_INCLUDE_DIRECTORIES
         ${CMAKE_SOURCE_DIR}/user
         ${CMAKE_SOURCE_DIR}/user/uart
         ${CMAKE_SOURCE_DIR}/user/imu601
+        ${CMAKE_SOURCE_DIR}/user/line_sensor
 )
 
 # 根据开关添加对应的头文件目录

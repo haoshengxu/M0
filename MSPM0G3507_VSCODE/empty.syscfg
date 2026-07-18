@@ -55,9 +55,15 @@ pinFunction6.enable    = true;
 pinFunction6.inputFreq = 32.768;
 
 ADC121.$name                      = "ADC12_0";
-ADC121.sampleMode                 = "DL_ADC12_SAMPLING_SOURCE_MANUAL";
+ADC121.configureDMA               = true;
+ADC121.enabledDMATriggers         = ["DL_ADC12_DMA_MEM0_RESULT_LOADED"];
+ADC121.sampCnt                    = 1;
 ADC121.peripheral.adcPin0.$assign = "PA27";
 ADC121.adcPin0Config.$name        = "ti_driverlib_gpio_GPIOPinGeneric4";
+ADC121.DMA_CHANNEL.$name          = "DMA_CH0";
+ADC121.DMA_CHANNEL.transferMode   = "FULL_CH_REPEAT_SINGLE";
+ADC121.DMA_CHANNEL.srcLength      = "HALF_WORD";
+ADC121.DMA_CHANNEL.dstLength      = "HALF_WORD";
 
 
 GPIO1.port                          = "PORTB";
@@ -137,6 +143,7 @@ pinFunction6.peripheral.$suggestSolution           = "SYSCTL";
 pinFunction6.peripheral.lfxInPin.$suggestSolution  = "PA3";
 pinFunction6.peripheral.lfxOutPin.$suggestSolution = "PA4";
 ADC121.peripheral.$suggestSolution                 = "ADC0";
+ADC121.DMA_CHANNEL.peripheral.$suggestSolution     = "DMA_CH0";
 Board.peripheral.$suggestSolution                  = "DEBUGSS";
 Board.peripheral.swclkPin.$suggestSolution         = "PA20";
 Board.peripheral.swdioPin.$suggestSolution         = "PA19";
