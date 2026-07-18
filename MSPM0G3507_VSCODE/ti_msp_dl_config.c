@@ -52,6 +52,7 @@ SYSCONFIG_WEAK void SYSCFG_DL_init(void)
     SYSCFG_DL_GPIO_init();
     /* Module-Specific Initializations*/
     SYSCFG_DL_SYSCTL_init();
+    SYSCFG_DL_OLED_init();
     SYSCFG_DL_IMU_init();
     SYSCFG_DL_PRINT_init();
     SYSCFG_DL_ADC12_0_init();
@@ -87,6 +88,7 @@ SYSCONFIG_WEAK void SYSCFG_DL_initPower(void)
 {
     DL_GPIO_reset(GPIOA);
     DL_GPIO_reset(GPIOB);
+    DL_I2C_reset(OLED_INST);
     DL_UART_Main_reset(IMU_INST);
     DL_UART_Main_reset(PRINT_INST);
     DL_ADC12_reset(ADC12_0_INST);
@@ -95,6 +97,7 @@ SYSCONFIG_WEAK void SYSCFG_DL_initPower(void)
 
     DL_GPIO_enablePower(GPIOA);
     DL_GPIO_enablePower(GPIOB);
+    DL_I2C_enablePower(OLED_INST);
     DL_UART_Main_enablePower(IMU_INST);
     DL_UART_Main_enablePower(PRINT_INST);
     DL_ADC12_enablePower(ADC12_0_INST);
@@ -110,6 +113,17 @@ SYSCONFIG_WEAK void SYSCFG_DL_GPIO_init(void)
     DL_GPIO_initPeripheralAnalogFunction(GPIO_HFXOUT_IOMUX);
     DL_GPIO_initPeripheralAnalogFunction(GPIO_LFXIN_IOMUX);
     DL_GPIO_initPeripheralAnalogFunction(GPIO_LFXOUT_IOMUX);
+
+    DL_GPIO_initPeripheralInputFunctionFeatures(GPIO_OLED_IOMUX_SDA,
+        GPIO_OLED_IOMUX_SDA_FUNC, DL_GPIO_INVERSION_DISABLE,
+        DL_GPIO_RESISTOR_NONE, DL_GPIO_HYSTERESIS_DISABLE,
+        DL_GPIO_WAKEUP_DISABLE);
+    DL_GPIO_initPeripheralInputFunctionFeatures(GPIO_OLED_IOMUX_SCL,
+        GPIO_OLED_IOMUX_SCL_FUNC, DL_GPIO_INVERSION_DISABLE,
+        DL_GPIO_RESISTOR_NONE, DL_GPIO_HYSTERESIS_DISABLE,
+        DL_GPIO_WAKEUP_DISABLE);
+    DL_GPIO_enableHiZ(GPIO_OLED_IOMUX_SDA);
+    DL_GPIO_enableHiZ(GPIO_OLED_IOMUX_SCL);
 
     DL_GPIO_initPeripheralOutputFunction(
         GPIO_IMU_IOMUX_TX, GPIO_IMU_IOMUX_TX_FUNC);
@@ -258,6 +272,37 @@ SYSCONFIG_WEAK void SYSCFG_DL_SYSCTL_init(void)
 
 }
 
+
+static const DL_I2C_ClockConfig gOLEDClockConfig = {
+    .clockSel = DL_I2C_CLOCK_BUSCLK,
+    .divideRatio = DL_I2C_CLOCK_DIVIDE_1,
+};
+
+SYSCONFIG_WEAK void SYSCFG_DL_OLED_init(void) {
+
+    DL_I2C_setClockConfig(OLED_INST,
+        (DL_I2C_ClockConfig *) &gOLEDClockConfig);
+    DL_I2C_setAnalogGlitchFilterPulseWidth(OLED_INST,
+        DL_I2C_ANALOG_GLITCH_FILTER_WIDTH_50NS);
+    DL_I2C_enableAnalogGlitchFilter(OLED_INST);
+
+    /* 使能 I2C 控制器 */
+    DL_I2C_enableController(OLED_INST);
+
+    /* Configure Controller Mode */
+    DL_I2C_resetControllerTransfer(OLED_INST);
+    /* Set frequency to 400000 Hz*/
+    DL_I2C_setTimerPeriod(OLED_INST, 9);
+    DL_I2C_setControllerTXFIFOThreshold(OLED_INST, DL_I2C_TX_FIFO_LEVEL_EMPTY);
+    DL_I2C_setControllerRXFIFOThreshold(OLED_INST, DL_I2C_RX_FIFO_LEVEL_BYTES_1);
+    DL_I2C_enableControllerClockStretching(OLED_INST);
+
+
+    /* Enable module */
+    DL_I2C_enableController(OLED_INST);
+
+
+}
 
 static const DL_UART_Main_ClockConfig gIMUClockConfig = {
     .clockSel    = DL_UART_MAIN_CLOCK_BUSCLK,

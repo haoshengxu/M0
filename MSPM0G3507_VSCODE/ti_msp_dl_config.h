@@ -94,6 +94,22 @@ extern "C" {
 bool SYSCFG_DL_SYSCTL_SYSPLL_init(void);
 
 
+
+/* Defines for OLED */
+#define OLED_INST                                                           I2C1
+#define OLED_INST_IRQHandler                                     I2C1_IRQHandler
+#define OLED_INST_INT_IRQN                                         I2C1_INT_IRQn
+#define OLED_BUS_SPEED_HZ                                                 400000
+#define GPIO_OLED_SDA_PORT                                                 GPIOB
+#define GPIO_OLED_SDA_PIN                                          DL_GPIO_PIN_3
+#define GPIO_OLED_IOMUX_SDA                                      (IOMUX_PINCM16)
+#define GPIO_OLED_IOMUX_SDA_FUNC                       IOMUX_PINCM16_PF_I2C1_SDA
+#define GPIO_OLED_SCL_PORT                                                 GPIOB
+#define GPIO_OLED_SCL_PIN                                          DL_GPIO_PIN_2
+#define GPIO_OLED_IOMUX_SCL                                      (IOMUX_PINCM15)
+#define GPIO_OLED_IOMUX_SCL_FUNC                       IOMUX_PINCM15_PF_I2C1_SCL
+
+
 /* Defines for IMU */
 #define IMU_INST                                                           UART3
 #define IMU_INST_FREQUENCY                                              40000000
@@ -192,6 +208,7 @@ void SYSCFG_DL_GPIO_init(void);
 void SYSCFG_DL_SYSCTL_init(void);
 
 bool SYSCFG_DL_SYSCTL_SYSPLL_init(void);
+void SYSCFG_DL_OLED_init(void);
 void SYSCFG_DL_IMU_init(void);
 void SYSCFG_DL_PRINT_init(void);
 void SYSCFG_DL_ADC12_0_init(void);
